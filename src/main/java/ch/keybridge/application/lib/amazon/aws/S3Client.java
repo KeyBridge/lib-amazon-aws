@@ -26,10 +26,10 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -41,8 +41,9 @@ import javax.ws.rs.client.ClientBuilder;
 /**
  * Amazon S3 REST Client.
  * <p>
- * This instance is a copy of the original in the DATA:DATA-ETL-ejb project,
- * located in the org.caulfield.etl.util package.
+ * This is a convenience wrapper around the {@link AmazonS3} utility class,
+ * providing automatic credential loading via a resource file plus simple access
+ * to common methods.
  * <p>
  * @author Jesse Caulfield <jesse@caulfield.org>
  */
@@ -53,7 +54,7 @@ public class S3Client {
   /**
    * The properties file that this class reads to load the AWS credentials.
    */
-  private static final String BUNDLE = "aws.properties";
+  private static final String BUNDLE = "aws";
 
   /**
    * The S3 URL base. "https://s3.amazonaws.com/"
@@ -61,19 +62,42 @@ public class S3Client {
   private static final String S3_URL_BASE = "https://s3.amazonaws.com/";
 
   /**
-   * The Amazon S3 HTTP Client. This is automatically initialized in the
-   * constructor.
+   * The actual Amazon S3 HTTP service provider interface instance. This is
+   * automatically initialized in the constructor.
    */
-  private AmazonS3 amazonS3;
+  private final AmazonS3 amazonS3;
 
   /**
-   * Construct a new Amazon S3 client. The Amazon S3 access credentials are
-   * loaded from the ResourceBundle or Properties.
+   * Construct a new Amazon S3 client using the provided keys.
    * <p>
+   * @param accessKey the AWS S3 access key
+   * @param secretKey the AWS S3 secret key
+   */
+  public S3Client(String accessKey, String secretKey) {
+    this.amazonS3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
+  }
+
+  /**
+   * Get the actual Amazon S3 client instance. This provides direct access to
+   * the Amazon S3 service provider interface.
+   * <p>
+   * @return the Amazon S3 client.
+   */
+  public AmazonS3 getAmazonS3() {
+    return amazonS3;
+  }
+
+  /**
+   * Get a new Amazon S3 client instance.
+   * <p>
+   * The Amazon S3 access credentials are loaded from the ResourceBundle or
+   * Properties.
+   * <p>
+   * @return an S3 instance ready for user
    * @throws Exception if the local file amazon.properties is not found in the
    *                   etc directory
    */
-  public S3Client() throws Exception {
+  public static S3Client getInstance() throws Exception {
     /**
      * Load the properties containing the Amazon S3 access credentials. FAIL if
      * the properties file is not present or invalid.
@@ -88,22 +112,13 @@ public class S3Client {
      * Instantiate a new Amazon S3 HTTP Client.
      */
     try {
-      amazonS3 = new AmazonS3Client(new BasicAWSCredentials(bundle.getString("s3.aws.access.key"),
-                                                            bundle.getString("s3.aws.secret.key")));
+      return new S3Client(bundle.getString("s3.aws.access.key"),
+                          bundle.getString("s3.aws.secret.key"));
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Amazon S3 Client failed to initialize. {0}", e);
       throw new Exception(BUNDLE + " resource bundle does contain s3.aws.access.key or secret.key entries.");
     }
-  }
 
-  /**
-   * Construct a new Amazon S3 client using the provided keys.
-   * <p>
-   * @param accessKey the AWS S3 access key
-   * @param secretKey the AWS S3 secret key
-   */
-  public S3Client(String accessKey, String secretKey) {
-    this.amazonS3 = new AmazonS3Client(new BasicAWSCredentials(accessKey, secretKey));
   }
 
   /**
@@ -127,7 +142,7 @@ public class S3Client {
    * @throws Exception   if the Amazon S3 client encounters and error uploading
    *                     the file object
    */
-  public String uploadFile(String bucketName, String prefix, File file) throws IOException, Exception {
+  public String uploadFile(String bucketName, String prefix, Path file) throws IOException, Exception {
     /**
      * Generate the key under which to store the new object. The File Key is the
      * fully qualified file name (including path prefix) but not including the
@@ -136,7 +151,7 @@ public class S3Client {
     String putObjectFileKey = (prefix == null || prefix.isEmpty())
                               ? ""
                               : (prefix + "/")
-                                + file.getName();
+                                + file.getFileName();
     /**
      * Upload an object to the bucket. You can also specify your own metadata
      * when uploading to S3, which allows you set a variety of options like
@@ -147,7 +162,7 @@ public class S3Client {
      * bucket and key. After constructing the request specify object canned ACL:
      * the pre-configured access control policy to use for the new object.
      */
-    PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, putObjectFileKey, file);
+    PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, putObjectFileKey, file.toFile());
     putObjectRequest.setCannedAcl(CannedAccessControlList.PublicRead);
     /**
      * Uploads a new object to the specified Amazon S3 bucket.
@@ -163,7 +178,7 @@ public class S3Client {
     /**
      * Query the S3 server and return the new image ETag value.
      */
-    return getETag(bucketName + "/" + prefix + file.getName());
+    return getETag(bucketName + "/" + prefix + file.getFileName());
   }
 
   /**
@@ -173,7 +188,7 @@ public class S3Client {
    * @param uri a complete URI pointing to the remote file:
    * @return the server generated ETag value - NULL on failure.
    */
-  public String getETag(URI uri) {
+  public static String getETag(URI uri) {
     try {
       return ClientBuilder.newClient().target(uri).request().head().getHeaderString("ETag");
     } catch (Exception e) {
@@ -191,7 +206,7 @@ public class S3Client {
    *                not begin with a slash "/"
    * @return the S3 server generated ETag value - NULL on failure.
    */
-  public String getETag(String urlPath) throws IllegalArgumentException {
+  public static String getETag(String urlPath) throws IllegalArgumentException {
     if (urlPath.toLowerCase(Locale.getDefault()).startsWith("http")) {
       throw new IllegalArgumentException("URL path should ONLY contain the PATH portion of a URL: " + urlPath);
     }
@@ -222,7 +237,7 @@ public class S3Client {
    * @return a non-null Map of key/value pairs describing the geographic extent
    *         of an overlay.
    */
-  public Map<String, String> getImageMetaData(String urlPath) {
+  public static Map<String, String> getImageMetaData(String urlPath) {
     if (urlPath.toLowerCase(Locale.getDefault()).startsWith("http://")) {
       throw new IllegalArgumentException("URL path should ONLY contain the PATH portion of a URL: " + urlPath);
     }

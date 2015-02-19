@@ -5,7 +5,6 @@
  */
 package ch.keybridge.application.lib.amazon.aws;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -40,7 +39,7 @@ public class S3ClientTest extends TestCase {
 //    System.out.println("  testUploadFile " + file);
     assertNotNull(client);
     try {
-      client.uploadFile("kbs3temp", "test", new File(file.toURI()));
+      client.uploadFile("kbs3temp", "test", Paths.get(file.toURI()));
     } catch (Exception ex) {
       Logger.getLogger(S3ClientTest.class.getName()).log(Level.SEVERE, null, ex);
       fail(ex.getMessage());
@@ -52,7 +51,7 @@ public class S3ClientTest extends TestCase {
    * Test of getETag method, of class S3Client.
    */
   public void testGetETag() {
-    String etag = client.getETag("kbs3temp/test/1267441.png");
+    String etag = S3Client.getETag("kbs3temp/test/1267441.png");
     assertNotNull(etag);
     System.out.println("  test Get ETag OK: " + etag);
   }
@@ -61,7 +60,7 @@ public class S3ClientTest extends TestCase {
    * Test of getImageMetaData method, of class S3Client.
    */
   public void testGetImageMetaData() {
-    Map<String, String> metadata = client.getImageMetaData("kbs3temp/test/1267441.png");
+    Map<String, String> metadata = S3Client.getImageMetaData("kbs3temp/test/1267441.png");
     assertFalse(metadata.isEmpty());
     System.out.println("  test Get Image MetaData OK: " + metadata);
   }
