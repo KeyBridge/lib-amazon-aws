@@ -150,8 +150,7 @@ public class S3Client {
      */
     String putObjectFileKey = (prefix == null || prefix.isEmpty())
                               ? ""
-                              : (prefix + "/")
-                                + file.getFileName();
+                              : (prefix.endsWith("/") ? prefix : prefix + "/") + file.getFileName();
     /**
      * Upload an object to the bucket. You can also specify your own metadata
      * when uploading to S3, which allows you set a variety of options like
@@ -171,14 +170,13 @@ public class S3Client {
       amazonS3.putObject(putObjectRequest);
     } catch (AmazonClientException amazonClientException) {
       logger.log(Level.SEVERE, "S3Client upload error: {0}", amazonClientException.getMessage());
-      throw new Exception("AmazonClientException means the client encountered "
-                          + "a serious internal problem while trying to communicate with S3, "
+      throw new Exception("The client encountered a serious internal problem while trying to communicate with S3, "
                           + "such as not being able to access the network: " + amazonClientException.getMessage());
     }
     /**
      * Query the S3 server and return the new image ETag value.
      */
-    return getETag(bucketName + "/" + prefix + file.getFileName());
+    return getETag(bucketName + "/" + putObjectFileKey);
   }
 
   /**
@@ -208,7 +206,7 @@ public class S3Client {
    */
   public static String getETag(String urlPath) throws IllegalArgumentException {
     if (urlPath.toLowerCase(Locale.getDefault()).startsWith("http")) {
-      throw new IllegalArgumentException("URL path should ONLY contain the PATH portion of a URL: " + urlPath);
+      throw new IllegalArgumentException("URL path should ONLY contain the PATH portion of a URL and not the domain.  " + urlPath);
     }
     /**
      * Build a new web resource target for the indicated filename and key index
@@ -239,7 +237,7 @@ public class S3Client {
    */
   public static Map<String, String> getImageMetaData(String urlPath) {
     if (urlPath.toLowerCase(Locale.getDefault()).startsWith("http://")) {
-      throw new IllegalArgumentException("URL path should ONLY contain the PATH portion of a URL: " + urlPath);
+      throw new IllegalArgumentException("URL path should ONLY contain the PATH portion of a URL and not the domain.  " + urlPath);
     }
     /**
      * Create a key/value map to store our keywords of interest.
