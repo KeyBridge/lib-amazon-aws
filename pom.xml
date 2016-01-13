@@ -4,7 +4,7 @@
 
   <groupId>keybridge.lib</groupId>
   <artifactId>amazon-aws</artifactId>
-  <version>1.0</version>
+  <version>1.9.19</version>
   <packaging>jar</packaging>
   <name>lib-amazon.aws</name>
   <description>Amazon AWS client and automation utilities.
@@ -12,7 +12,11 @@
     Provides convenient wrapper for AWS Java SDK resources.
 
     Amazon Web Services offers a broad set of global compute,
-    storage, database, analytics, application, and deployment services.</description>
+    storage, database, analytics, application, and deployment services.
+
+    v1.0.0 build based upon AWS SDK v1.9.19
+    v1.9.19 - fast forward to track version numbers with AWS SDK version
+  </description>
   <organization>
     <name>Key Bridge</name>
     <url>http://keybridge.ch</url>
@@ -38,6 +42,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
+    <additionalparam>-Xdoclint:none</additionalparam>
   </properties>
 
   <dependencies>
