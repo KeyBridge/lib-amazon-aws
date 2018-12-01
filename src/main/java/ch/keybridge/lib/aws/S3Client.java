@@ -30,7 +30,6 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.services.s3.transfer.*;
-import com.amazonaws.services.s3.transfer.internal.TransferStateChangeListener;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -594,9 +593,9 @@ public class S3Client {
    * Otherwise, the copy is scheduled and started as soon as resources become
    * available.
    * <p>
-   * <b>Note:</b> If the {@link TransferManager} is created with a regional S3
-   * client and the source & destination buckets are in different regions, use
-   * the {@link #copy(CopyObjectRequest, AmazonS3, TransferStateChangeListener)}
+   * <b>Note:</b> If the {@code TransferManager} is created with a regional S3
+   * client and the source and destination buckets are in different regions, use
+   * the {@code #copy(CopyObjectRequest, AmazonS3, TransferStateChangeListener)}
    * method.
    *
    * @param sourceBucketName      The name of the bucket from where the object
