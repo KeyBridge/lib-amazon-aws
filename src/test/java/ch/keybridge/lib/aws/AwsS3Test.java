@@ -32,24 +32,28 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  *
  * @author Key Bridge
  */
-public class S3ClientTest {
+public class AwsS3Test {
 
-  private S3Client client;
+  private AwsS3 client;
 
-  public S3ClientTest() {
+  public AwsS3Test() {
   }
 
   @Before
   public void setUp() {
     Regions region = Regions.US_EAST_1;
-    this.client = new S3Client(region);
-    String bucketName = "i0i0";
+    this.client = new AwsS3(region);
+
+    /**
+     * This is a temp bucket (manually) created for this test set. It will not
+     * work for you. Add you own.
+     */
+    String bucketName = "temp-i0i0";
     client.setBucketName(bucketName);
     client.setRegion(region);
   }
@@ -58,14 +62,22 @@ public class S3ClientTest {
   public void tearDown() {
   }
 
-  @Test
+//  @Test
   public void testList() {
-
-//Bucket ARN: arn:aws:s3:::kbs3temp
-    client.setMaxKeys(3);
+    /**
+     * List the content of a bucket. The AwsS3 client has an internal loop to
+     * fetch information about ALL objects. For some buckets with very large
+     * number of files (such as logging) this can take a while. Turn on FINE
+     * logging to watch as the list client goes back for more information until
+     * it has retrieved all it needs.
+     */
+    client.setMaxKeys(3); // fetch object information thee files as a time (very small)
 
     List<S3ObjectSummary> response = client.list(null);
 
+    /**
+     * Dump the info:
+     */
     System.out.println(" ------------------------------------------------------- ");
     for (S3ObjectSummary s3ObjectSummary : response) {
       System.out.println("   " + s3ObjectSummary);
@@ -75,6 +87,9 @@ public class S3ClientTest {
 
 //  @Test
   public void testUpload() throws AmazonClientException, AmazonServiceException, InterruptedException {
+    /**
+     * Blocking upload function.
+     */
 //    client.upload();
     Upload upload = client.uploadAsync("tmp/nbbackup/foo.tmp", Paths.get("/tmp/nbbackup6785828523077417973.tmp"));
     UploadResult result = upload.waitForUploadResult();
@@ -84,6 +99,13 @@ public class S3ClientTest {
 
 //  @Test
   public void testUploadDirectory() throws InterruptedException {
+    /**
+     * Non blocking function to Recursively upload a local directory.
+     * <p>
+     * Developer Note: this is non-blocking, but will abort as soon as the
+     * program exits. The logic below monitors the transfer progress then waits
+     * a second for the transaction to complete before exiting.
+     */
     MultipleFileUpload uploads = client.uploadDirectory("etl", Paths.get("/tmp/etl"), null);
     TransferProgress progress = uploads.getProgress();
     /**
@@ -97,7 +119,7 @@ public class S3ClientTest {
       System.out.println("  " + tp + "% " + progress.getBytesTransferred() + " of " + progress.getTotalBytesToTransfer() + " bytes");
     }
     /**
-     * Wait for the last file transfer to finish before exiting.
+     * Wait for the last file transfer to complete before exiting.
      */
     Thread.sleep(1000);
 
@@ -105,12 +127,20 @@ public class S3ClientTest {
 
 //  @Test
   public void testDownload() throws IOException {
+    /**
+     * Blocking download function. Like HTTP get.
+     */
     String fileObjectKeyName = "etl/foo/nbbackup1451552495868070804.tmp";
     client.download(fileObjectKeyName, Paths.get("/tmp/bar/foo.tmp"));
   }
 
 //  @Test
   public void downloadAsync() throws InterruptedException {
+    /**
+     * Non-blocking download function. As with upload, you must wait until the
+     * transfer is complete before exiting or the transaction will abort (and
+     * the file content will be discarded.)
+     */
     String fileObjectKeyName = "etl/foo/nbbackup1451552495868070804.tmp";
     Path file = Paths.get("/tmp/bar/foo.tmp");
     Download dn = client.downloadAsync(fileObjectKeyName, file);
@@ -124,13 +154,17 @@ public class S3ClientTest {
       System.out.println("  " + tp + "% " + progress.getBytesTransferred() + " of " + progress.getTotalBytesToTransfer() + " bytes");
     }
     /**
-     * Wait for the last file transfer to finish before exiting.
+     * Wait for the last file transfer to complete before exiting.
      */
     Thread.sleep(1000);
   }
 
 //  @Test
   public void downloadDirectory() throws InterruptedException {
+    /**
+     * Non-blocking function to recursively download an entire directory tree.
+     * As above, you must wait until completion before exiting.
+     */
     String keyPrefix = "etl";
     Path destinationDirectory = Paths.get("/tmp/bar");
 
@@ -145,23 +179,47 @@ public class S3ClientTest {
       System.out.println("  " + tp + "% " + progress.getBytesTransferred() + " of " + progress.getTotalBytesToTransfer() + " bytes");
     }
     /**
-     * Wait for the last file transfer to finish before exiting.
+     * Wait for the last file transfer to complete before exiting.
      */
     Thread.sleep(1000);
   }
 
 //  @Test
   public void testDelete() {
+    /**
+     * Blocking delete function.
+     */
     String fileObjectKeyName = "etl/foo/nbbackup1451552495868070804.tmp";
     client.delete(fileObjectKeyName);
   }
 
 //  @Test
   public void testdeleteManu() {
-    List<String> files = Arrays.asList("etl/foo/nbbackup1451552495868070804.tmp", "etl/foo/nbbackup6739056349827850053.tmp", "etl/foo/nbbackup1973598169851388919.tmp", "etl/foo/nbbackup6784960907250871608.tmp", "etl/foo/nbbackup2217161633707386187.tmp", "etl/foo/nbbackup6785828523077417973.tmp", "etl/foo/nbbackup2236090102726107993.tmp", "etl/foo/nbbackup6788697954604782842.tmp", "etl/foo/nbbackup2469693039842925381.tmp", "etl/foo/nbbackup708099909082382504.tmp", "etl/foo/nbbackup2829970401009443746.tmp", "etl/foo/nbbackup7111438522893165904.tmp");
+    /**
+     * Blocking delete function.
+     * <p>
+     * Developer note: Supposedly this supports deleting up to 1000 files in one
+     * call. We've not gotten that to work doe to an XML encoding error internal
+     * to the Version 1.x API. There are bugs issued (ca 2017) and the fix is
+     * supposedly implemented in the Version 2.x API.
+     * <p>
+     * This does seem to work for a small number of files (~10 to 20).
+     */
+    List<String> files = Arrays.asList("etl/foo/nbbackup1451552495868070804.tmp",
+                                       "etl/foo/nbbackup6739056349827850053.tmp",
+                                       "etl/foo/nbbackup1973598169851388919.tmp",
+                                       "etl/foo/nbbackup6784960907250871608.tmp",
+                                       "etl/foo/nbbackup2217161633707386187.tmp",
+                                       "etl/foo/nbbackup6785828523077417973.tmp",
+                                       "etl/foo/nbbackup2236090102726107993.tmp",
+                                       "etl/foo/nbbackup6788697954604782842.tmp",
+                                       "etl/foo/nbbackup2469693039842925381.tmp",
+                                       "etl/foo/nbbackup708099909082382504.tmp",
+                                       "etl/foo/nbbackup2829970401009443746.tmp",
+                                       "etl/foo/nbbackup7111438522893165904.tmp");
     DeleteObjectsResult result = client.delete(files);
 
-    System.out.println("delete manu files OK");
+    System.out.println("delete " + result.getDeletedObjects().size() + " files OK");
 
   }
 

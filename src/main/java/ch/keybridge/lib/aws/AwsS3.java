@@ -58,9 +58,9 @@ import java.util.stream.Collectors;
  * @since ca 2/17/15 or earlier
  * @since rewritten 12/1/18 to include complete file control
  */
-public class S3Client {
+public class AwsS3 {
 
-  private static final Logger LOG = Logger.getLogger(S3Client.class.getName());
+  private static final Logger LOG = Logger.getLogger(AwsS3.class.getName());
 
   /**
    * 10. The optional parameter indicating the maximum number of keys to include
@@ -97,7 +97,7 @@ public class S3Client {
    *
    * @param region The AWS region.
    */
-  public S3Client(Regions region) {
+  public AwsS3(Regions region) {
     this.region = region;
   }
 
@@ -111,7 +111,7 @@ public class S3Client {
    * @param awsAccessKeyId     The AWS S3 access key.
    * @param awsSecretAccessKey The AWS S3 secret key.
    */
-  public S3Client(Regions region, String awsAccessKeyId, String awsSecretAccessKey) {
+  public AwsS3(Regions region, String awsAccessKeyId, String awsSecretAccessKey) {
     this.region = region;
     this.awsAccessKeyId = awsAccessKeyId;
     this.awsSecretAccessKey = awsSecretAccessKey;
@@ -126,7 +126,7 @@ public class S3Client {
     this.region = region;
   }
 
-  public S3Client withRegion(Regions region) {
+  public AwsS3 withRegion(Regions region) {
     this.region = region;
     return this;
   }
@@ -139,7 +139,7 @@ public class S3Client {
     this.bucketName = bucketName;
   }
 
-  public S3Client withBucketName(String bucketName) {
+  public AwsS3 withBucketName(String bucketName) {
     this.bucketName = bucketName;
     return this;
   }
@@ -152,7 +152,7 @@ public class S3Client {
     this.maxKeys = maxKeys;
   }
 
-  public S3Client withMaxKeys(int maxKeys) {
+  public AwsS3 withMaxKeys(int maxKeys) {
     this.maxKeys = maxKeys;
     return this;
   }//</editor-fold>
