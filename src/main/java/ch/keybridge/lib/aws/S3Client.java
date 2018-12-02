@@ -31,6 +31,7 @@ import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.services.s3.transfer.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -244,8 +245,8 @@ public class S3Client {
   }
 
   /**
-   * Upload objects in a single operation—With a single PUT operation. Supports
-   * objects up to 5 GB in size.
+   * Uploads new object to the specified Amazon S3 bucket. Supports objects up
+   * to 5 GB in size.
    * <p>
    * https://docs.aws.amazon.com/AmazonS3/latest/dev/UploadObjSingleOpJava.html
    *
@@ -285,6 +286,41 @@ public class S3Client {
       request.setMetadata(metadata);
     }
     buildS3Client().putObject(request);
+  }
+
+  /**
+   * Upload the specified input stream and object metadata to Amazon S3 under
+   * the specified bucket and key name.
+   *
+   * @param fileObjectKeyName The key under which to store the specified file.
+   * @param inputStream       The input stream containing the data to be
+   *                          uploaded to Amazon S3.
+   * @param metadata          Additional metadata instructing Amazon S3 how to
+   *                          handle the uploaded data (e.g. custom user
+   *                          metadata, hooks for specifying content type,
+   *                          etc.).
+   *
+   * @return A PutObjectResult object containing the information returned by
+   *         Amazon S3 for the newly created object.
+   * @throws SdkClientException     If any errors are encountered in the client
+   *                                while making the request or handling the
+   *                                response.
+   * @throws AmazonServiceException If any errors occurred in Amazon S3 while
+   *                                processing the request.
+   */
+  public PutObjectResult upload(String fileObjectKeyName, InputStream inputStream, ObjectMetadata metadata) throws AmazonServiceException, SdkClientException {
+    String key = fileObjectKeyName.startsWith("/")
+                 ? fileObjectKeyName.substring(1)
+                 : fileObjectKeyName;
+    /**
+     * When using an BufferedInputStream as data source, please remember to use
+     * a buffer of size no less than
+     * RequestClientOptions.DEFAULT_STREAM_BUFFER_SIZE while initializing the
+     * BufferedInputStream. This is to ensure that the SDK can correctly mark
+     * and reset the stream with enough memory buffer during signing and
+     * retries.
+     */
+    return buildS3Client().putObject(bucketName, key, inputStream, metadata);
   }
 
   /**
