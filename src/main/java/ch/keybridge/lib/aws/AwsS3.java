@@ -97,8 +97,7 @@ public class AwsS3 {
    *
    * @param region The AWS region.
    */
-  public AwsS3(Regions region) {
-    this.region = region;
+  public AwsS3() {
   }
 
   /**
@@ -111,8 +110,7 @@ public class AwsS3 {
    * @param awsAccessKeyId     The AWS S3 access key.
    * @param awsSecretAccessKey The AWS S3 secret key.
    */
-  public AwsS3(Regions region, String awsAccessKeyId, String awsSecretAccessKey) {
-    this.region = region;
+  public AwsS3(String awsAccessKeyId, String awsSecretAccessKey) {
     this.awsAccessKeyId = awsAccessKeyId;
     this.awsSecretAccessKey = awsSecretAccessKey;
   }
@@ -170,18 +168,20 @@ public class AwsS3 {
      * Use either the default profile credentials provider or a basic provider,
      * depending upon whether the credential is provided.
      */
+    AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard();
     if (awsAccessKeyId != null && awsSecretAccessKey != null) {
       BasicAWSCredentials credentials = new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
-      return AmazonS3ClientBuilder.standard().
-        withCredentials(new AWSStaticCredentialsProvider(credentials))
-        .withRegion(region)
-        .build();
+      builder.withCredentials(new AWSStaticCredentialsProvider(credentials));
     } else {
-      return AmazonS3ClientBuilder.standard()
-        .withCredentials(new ProfileCredentialsProvider())
-        .withRegion(region)
-        .build();
+      builder.withCredentials(new ProfileCredentialsProvider());
     }
+    /**
+     * Conditionally set the region.
+     */
+    return region != null
+           ? builder.withRegion(region).build()
+           : builder.build();
+
   }//</editor-fold>
 
   /**

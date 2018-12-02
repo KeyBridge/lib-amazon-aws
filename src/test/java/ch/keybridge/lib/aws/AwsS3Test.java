@@ -47,13 +47,13 @@ public class AwsS3Test {
   @Before
   public void setUp() {
     Regions region = Regions.US_EAST_1;
-    this.client = new AwsS3(region);
+    this.client = new AwsS3().withRegion(region);
 
     /**
      * This is a temp bucket (manually) created for this test set. It will not
      * work for you. Add you own.
      */
-    String bucketName = "temp-i0i0";
+    String bucketName = "my-aws-bucket";
     client.setBucketName(bucketName);
     client.setRegion(region);
   }
