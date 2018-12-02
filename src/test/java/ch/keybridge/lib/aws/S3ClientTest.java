@@ -49,7 +49,7 @@ public class S3ClientTest {
   public void setUp() {
     this.client = new S3Client();
     AwsRegion region = AwsRegion.US_EAST_1;
-    String bucketName = "kbs3temp";
+    String bucketName = "i0i0";
     client.setBucketName(bucketName);
     client.setRegion(region);
   }

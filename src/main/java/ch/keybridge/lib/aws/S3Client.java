@@ -65,7 +65,7 @@ public class S3Client {
    * 10. The optional parameter indicating the maximum number of keys to include
    * in the response.
    */
-  private static final int MAX_KEYS = 100;
+  private static final int MAX_KEYS = 1000;
 
   /**
    * The AWS regions.
@@ -90,6 +90,14 @@ public class S3Client {
    */
   private String awsSecretAccessKey;
 
+  /**
+   * Get an S3 client reading the AWS credentials from the default location;
+   * either .aws/credential or from environment variables.
+   */
+  public S3Client() {
+  }
+
+  //<editor-fold defaultstate="collapsed" desc="Getter and Setter">
   public AwsRegion getRegion() {
     return region;
   }
@@ -127,14 +135,7 @@ public class S3Client {
   public S3Client withMaxKeys(int maxKeys) {
     this.maxKeys = maxKeys;
     return this;
-  }
-
-  /**
-   * Get an S3 client reading the AWS credentials from the default location;
-   * either .aws/credential or from environment variables.
-   */
-  public S3Client() {
-  }
+  }//</editor-fold>
 
   /**
    * Construct a new AwsS3Client, specifying the access credentials.
@@ -199,7 +200,6 @@ public class S3Client {
    */
   public List<S3ObjectSummary> list(String prefix) throws AmazonServiceException, SdkClientException {
     List<S3ObjectSummary> objectSummaries = new ArrayList<>();
-
     /**
      * Contains options to return a list of summary information about the
      * objects in the specified bucket. Depending on the request parameters,
@@ -271,22 +271,13 @@ public class S3Client {
      * The second object by using a PutObjectRequest that specifies the bucket
      * name, object key, and file path. The PutObjectRequest also specifies the
      * ContentType header and title metadata.
-     */
-//    AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
-//      .withRegion(region.getRegion())
-//      .withCredentials(new ProfileCredentialsProvider())
-//      .build();
-
-    /**
+     * <p>
      * Inspect and optionally correct the fileObjectKeyName.
      */
     String key = fileObjectKeyName.startsWith("/")
                  ? fileObjectKeyName.substring(1)
                  : fileObjectKeyName;
     PutObjectRequest request = new PutObjectRequest(bucketName, key, file.toFile());
-//      ObjectMetadata metadata = new ObjectMetadata();
-//      metadata.setContentType("plain/text");
-//      metadata.addUserMetadata("x-amz-meta-title", "someTitle");
     /**
      * Conditionally set the metadata.
      */
@@ -529,7 +520,6 @@ public class S3Client {
    *                                    be deleted.
    */
   public DeleteObjectsResult delete(Collection<String> fileObjectKeyNames) throws AmazonServiceException, SdkClientException, MultiObjectDeleteException {
-
     /**
      * Convert the file key names to a list of delete names. KeyVersion is a key
      * to delete, with an optional version attribute.
