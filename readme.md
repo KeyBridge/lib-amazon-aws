@@ -19,7 +19,7 @@ Set credentials in the AWS credentials profile file on your local system, locate
 
 This file should contain lines in the following format:
 
-```sg
+```sh
 [default]
 aws_access_key_id = your_access_key_id
 aws_secret_access_key = your_secret_access_key
@@ -28,7 +28,7 @@ aws_secret_access_key = your_secret_access_key
 Set the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables.
 To set these variables on Linux, macOS, or Unix, use export:
 
-```sg
+```sh
 export AWS_ACCESS_KEY_ID=your_access_key_id
 export AWS_SECRET_ACCESS_KEY=your_secret_access_key
 ```
