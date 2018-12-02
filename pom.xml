@@ -9,7 +9,7 @@
   <name>lib-amazon-aws</name>
   <description>Amazon AWS client and automation utilities.
 
-    Provides convenient wrapper for AWS Java SDK resources.
+    Provides a convenient wrapper for AWS Java SDK resources.
 
     Amazon Web Services offers a broad set of global compute,
     storage, database, analytics, application, and deployment services.
