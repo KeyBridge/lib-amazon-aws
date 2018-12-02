@@ -18,13 +18,13 @@
  */
 package ch.keybridge.lib.aws;
 
-import ch.keybridge.lib.aws.type.AwsRegion;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion;
@@ -69,9 +69,9 @@ public class S3Client {
   private static final int MAX_KEYS = 1000;
 
   /**
-   * The AWS regions.
+   * The AWS region.
    */
-  private AwsRegion region;
+  private Regions region;
   /**
    * The AWS S3 bucket name.
    */
@@ -94,20 +94,39 @@ public class S3Client {
   /**
    * Get an S3 client reading the AWS credentials from the default location;
    * either .aws/credential or from environment variables.
+   *
+   * @param region The AWS region.
    */
-  public S3Client() {
-  }
-
-  //<editor-fold defaultstate="collapsed" desc="Getter and Setter">
-  public AwsRegion getRegion() {
-    return region;
-  }
-
-  public void setRegion(AwsRegion region) {
+  public S3Client(Regions region) {
     this.region = region;
   }
 
-  public S3Client withRegion(AwsRegion region) {
+  /**
+   * Construct a new AwsS3Client, specifying the access credentials.
+   * <p>
+   * This method is NOT preferred. You should set the credentials in a
+   * {@code .aws/credential} file or environment variable.
+   *
+   * @param region             The AWS region.
+   * @param awsAccessKeyId     The AWS S3 access key.
+   * @param awsSecretAccessKey The AWS S3 secret key.
+   */
+  public S3Client(Regions region, String awsAccessKeyId, String awsSecretAccessKey) {
+    this.region = region;
+    this.awsAccessKeyId = awsAccessKeyId;
+    this.awsSecretAccessKey = awsSecretAccessKey;
+  }
+
+  //<editor-fold defaultstate="collapsed" desc="Getter and Setter">
+  public Regions getRegion() {
+    return region;
+  }
+
+  public void setRegion(Regions region) {
+    this.region = region;
+  }
+
+  public S3Client withRegion(Regions region) {
     this.region = region;
     return this;
   }
@@ -138,17 +157,6 @@ public class S3Client {
     return this;
   }//</editor-fold>
 
-  /**
-   * Construct a new AwsS3Client, specifying the access credentials.
-   *
-   * @param awsAccessKeyId     The AWS S3 access key.
-   * @param awsSecretAccessKey The AWS S3 secret key.
-   */
-  public S3Client(String awsAccessKeyId, String awsSecretAccessKey) {
-    this.awsAccessKeyId = awsAccessKeyId;
-    this.awsSecretAccessKey = awsSecretAccessKey;
-  }
-
   //<editor-fold defaultstate="collapsed" desc="Common">
   /**
    * Internal method to build an Amazon S3 client. Amazon S3 provides storage
@@ -164,11 +172,14 @@ public class S3Client {
      */
     if (awsAccessKeyId != null && awsSecretAccessKey != null) {
       BasicAWSCredentials credentials = new BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
-      return AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
+      return AmazonS3ClientBuilder.standard().
+        withCredentials(new AWSStaticCredentialsProvider(credentials))
+        .withRegion(region)
+        .build();
     } else {
       return AmazonS3ClientBuilder.standard()
         .withCredentials(new ProfileCredentialsProvider())
-        .withRegion(region.getRegion())
+        .withRegion(region)
         .build();
     }
   }//</editor-fold>

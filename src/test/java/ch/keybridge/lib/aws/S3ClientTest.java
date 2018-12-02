@@ -18,9 +18,9 @@
  */
 package ch.keybridge.lib.aws;
 
-import ch.keybridge.lib.aws.type.AwsRegion;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.model.DeleteObjectsResult;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.services.s3.transfer.*;
@@ -47,8 +47,8 @@ public class S3ClientTest {
 
   @Before
   public void setUp() {
-    this.client = new S3Client();
-    AwsRegion region = AwsRegion.US_EAST_1;
+    Regions region = Regions.US_EAST_1;
+    this.client = new S3Client(region);
     String bucketName = "i0i0";
     client.setBucketName(bucketName);
     client.setRegion(region);
