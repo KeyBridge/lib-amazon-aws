@@ -33,7 +33,6 @@
 
 
   <dependencies>
-
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-s3</artifactId>
@@ -41,46 +40,18 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <version>2.0.1</version>
-      <scope>provided</scope>
-    </dependency>
-
-
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>ar.com.hjg</groupId>
-      <artifactId>pngj</artifactId>
-      <version>2.1.0</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-client</artifactId>
-      <version>2.14</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <distributionManagement>
     <repository>
-      <id>archiva.internal</id>
-      <name>Internal Release Repository</name>
-      <url>http://black:8088/repository/internal/</url>
+      <id>${repository.name}</id>
+      <url>${repository.url}</url>
     </repository>
-    <snapshotRepository>
-      <id>archiva.snapshots</id>
-      <name>Internal Snapshot Repository</name>
-      <url>http://black:8088/repository/snapshots/</url>
-    </snapshotRepository>
   </distributionManagement>
 
 </project>
