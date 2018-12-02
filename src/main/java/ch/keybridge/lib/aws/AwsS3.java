@@ -1,20 +1,19 @@
-/*
- * Copyright 2018 Key Bridge. All rights reserved. Use is subject to license
- * terms.
+/* 
+ * Copyright (C) 2018 Key Bridge
  *
- * This software code is protected by Copyrights and remains the property of
- * Key Bridge and its suppliers, if any. Key Bridge reserves all rights in and to
- * Copyrights and no license is granted under Copyrights in this Software
- * License Agreement.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- * Key Bridge generally licenses Copyrights for commercialization pursuant to
- * the terms of either a Standard Software Source Code License Agreement or a
- * Standard Product License Agreement. A copy of either Agreement can be
- * obtained upon request by sending an email to info@keybridgewireless.com.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * All information contained herein is the property of Key Bridge and its
- * suppliers, if any. The intellectual and technical concepts contained herein
- * are proprietary.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 package ch.keybridge.lib.aws;
 
