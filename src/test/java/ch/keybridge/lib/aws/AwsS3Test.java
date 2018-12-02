@@ -46,8 +46,7 @@ public class AwsS3Test {
 
   @Before
   public void setUp() {
-    Regions region = Regions.US_EAST_1;
-    this.client = new AwsS3().withRegion(region);
+    this.client = new AwsS3();
 
     /**
      * This is a temp bucket (manually) created for this test set. It will not
@@ -55,6 +54,12 @@ public class AwsS3Test {
      */
     String bucketName = "my-aws-bucket";
     client.setBucketName(bucketName);
+
+    /**
+     * You may programmatically set the region or, preferably, set it in the AWS
+     * config file or environment variable.
+     */
+    Regions region = Regions.US_EAST_1;
     client.setRegion(region);
   }
 
