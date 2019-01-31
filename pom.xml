@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>keybridge.lib</groupId>
   <artifactId>amazon-aws</artifactId>
-  <version>1.2.0</version>
-  <packaging>bundle</packaging>
+  <version>1.1.1</version>
+  <packaging>jar</packaging>
+
   <name>lib-amazon-aws</name>
   <description>Amazon AWS client and automation utilities.
 
@@ -17,8 +17,12 @@
     v1.0.0 build based upon AWS SDK v1.9.19
     v1.9.19 - fast forward to track version numbers with AWS SDK version
     v1.1.0 - rewrite S3 client to support full functionality  12/1/18
-    v1.2.0 - convert artifact to OSGI bundle
+    v1.1.1 - update to latest s3 library version 1.11.490
 
+
+
+    Branch 1.2.0 - OSGI support
+    v1.2.0 - convert artifact to OSGI bundle
   </description>
   <organization>
     <name>Key Bridge</name>
@@ -30,13 +34,15 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+
+    <amazon-s3.version>1.11.490</amazon-s3.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-s3</artifactId>
-      <version>1.11.460</version>
+      <version>${amazon-s3.version}</version>
     </dependency>
 
     <dependency>
@@ -46,43 +52,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>4.0.0</version>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package>*</Export-Package>
-            <!--
-            Developer note: normally we would not need to explicitly specify anything in Import-Package.
-            But some packages are picked up by maven-bundle-plugin that are not in any of the transitive dependencies
-            -->
-            <Import-Package>
-              !org.apache.log,
-              !org.joda.convert,
-              *</Import-Package>
-            <Embed-Dependency>*</Embed-Dependency>
-            <Embed-Transitive>true</Embed-Transitive>
-          </instructions>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <!--required for clean compile in netbeans-->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19.1</version>
-        <configuration>
-          <useSystemClassLoader>false</useSystemClassLoader>
-        </configuration>
-      </plugin>
-
-    </plugins>
-  </build>
 
   <distributionManagement>
     <repository>
