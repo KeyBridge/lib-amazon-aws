@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2018 Key Bridge
  *
  * This program is free software; you can redistribute it and/or
@@ -93,10 +93,21 @@ public class AwsS3 {
   /**
    * Get an S3 client reading the AWS credentials from the default location;
    * either .aws/credential or from environment variables.
-   *
-   * @param region The AWS region.
    */
   public AwsS3() {
+  }
+
+  /**
+   * Construct a new AwsS3Client, specifying the complete access configuration.
+   *
+   * @param bucketConfig an S3 bucket configuration
+   * @since v1.2.0 added -1/31/19
+   */
+  public AwsS3(S3BucketConfig bucketConfig) {
+    this.awsAccessKeyId = bucketConfig.getAwsAccessKeyId();
+    this.awsSecretAccessKey = bucketConfig.getAwsSecretAccessKey();
+    this.bucketName = bucketConfig.getBucketName();
+    this.region = bucketConfig.getRegion();
   }
 
   /**
@@ -105,9 +116,8 @@ public class AwsS3 {
    * This method is NOT preferred. You should set the credentials in a
    * {@code .aws/credential} file or environment variable.
    *
-   * @param region             The AWS region.
    * @param awsAccessKeyId     The AWS S3 access key.
-   * @param awsSecretAccessKey The AWS S3 secret key.
+   * @param awsSecretAccessKey The AWS S3 secret access key.
    */
   public AwsS3(String awsAccessKeyId, String awsSecretAccessKey) {
     this.awsAccessKeyId = awsAccessKeyId;
