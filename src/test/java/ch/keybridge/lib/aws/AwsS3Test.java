@@ -47,10 +47,9 @@ public class AwsS3Test {
   @Before
   public void setUp() {
     this.client = new AwsS3();
-
     /**
      * This is a temp bucket (manually) created for this test set. It will not
-     * work for you. Add you own.
+     * work for you. Add your own.
      */
     String bucketName = "my-aws-bucket";
     client.setBucketName(bucketName);
@@ -127,7 +126,6 @@ public class AwsS3Test {
      * Wait for the last file transfer to complete before exiting.
      */
     Thread.sleep(1000);
-
   }
 
 //  @Test
