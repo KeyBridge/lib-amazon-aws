@@ -194,6 +194,31 @@ public class AwsS3 {
   }//</editor-fold>
 
   /**
+   *
+   * Gets the metadata for the specified Amazon S3 object without actually
+   * fetching the object itself. This is useful in obtaining only the object
+   * metadata, and avoids wasting bandwidth on fetching the object data.
+   * <p>
+   * The object metadata contains information such as content type, content
+   * disposition, etc., as well as custom user metadata that can be associated
+   * with an object in Amazon S3.
+   * <p>
+   * This uses the pre-configured bucket containing the object's whose metadata
+   * is being retrieved.
+   *
+   * @param key The key of the object whose metadata is being retrieved.
+   * @return All Amazon S3 object metadata for the specified object.
+   * @throws SdkClientException     If any errors are encountered in the client
+   *                                while making the request or handling the
+   *                                response.
+   * @throws AmazonServiceException If any errors occurred in Amazon S3 while
+   *                                processing the request.
+   */
+  public ObjectMetadata getObjectMetadata(String key) throws SdkClientException, AmazonServiceException {
+    return buildS3Client().getObjectMetadata(bucketName, key);
+  }
+
+  /**
    * Listing Object Keys
    * <p>
    * Keys can be listed by prefix. By choosing a common prefix for the names of
@@ -228,7 +253,8 @@ public class AwsS3 {
      */
     ListObjectsV2Request request = new ListObjectsV2Request().withBucketName(bucketName).withMaxKeys(maxKeys);
     /**
-     * Conditionally set the prefix.
+     * Set the optional prefix parameter, restricting the response to keys that
+     * begin with the specified prefix.
      */
     if (prefix != null && !prefix.isEmpty()) {
       request.setPrefix(prefix);
