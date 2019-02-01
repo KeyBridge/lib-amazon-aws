@@ -51,7 +51,12 @@ public class S3BucketConfig {
    */
   private String bucketName;
 
-  public S3BucketConfig(Regions region, String bucketName) {
+  public S3BucketConfig() {
+  }
+
+  public S3BucketConfig(String awsAccessKeyId, String awsSecretAccessKey, Regions region, String bucketName) {
+    this.awsAccessKeyId = awsAccessKeyId;
+    this.awsSecretAccessKey = awsSecretAccessKey;
     this.region = region;
     this.bucketName = bucketName;
   }
