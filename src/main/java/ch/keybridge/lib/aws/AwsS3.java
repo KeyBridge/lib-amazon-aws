@@ -708,4 +708,13 @@ public class AwsS3 {
 //    transferManager.cop
   }
 
+  /**
+   * Get S3 object URL.
+   *
+   * @param objectKey The name of the Amazon S3 object.
+   * @return S3 object URL
+   */
+  public String getUrl(String objectKey) {
+    return buildS3Client().getUrl(bucketName, objectKey).toString();
+  }
 }
