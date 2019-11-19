@@ -16,7 +16,7 @@
  * suppliers, if any. The intellectual and technical concepts contained herein
  * are proprietary.
  */
-package ch.keybridge.lib.aws;
+package ch.keybridge.aws;
 
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;

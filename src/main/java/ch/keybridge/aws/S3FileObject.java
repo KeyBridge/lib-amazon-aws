@@ -16,7 +16,7 @@
  * suppliers, if any. The intellectual and technical concepts contained herein
  * are proprietary.
  */
-package ch.keybridge.lib.aws;
+package ch.keybridge.aws;
 
 import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;

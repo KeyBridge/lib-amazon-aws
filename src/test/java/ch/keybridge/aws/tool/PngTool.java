@@ -16,7 +16,7 @@
  * suppliers, if any. The intellectual and technical concepts contained herein
  * are proprietary.
  */
-package ch.keybridge.lib.aws.tool;
+package ch.keybridge.aws.tool;
 
 import java.util.logging.Logger;
 

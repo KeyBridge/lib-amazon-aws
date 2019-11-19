@@ -16,8 +16,9 @@
  * suppliers, if any. The intellectual and technical concepts contained herein
  * are proprietary.
  */
-package ch.keybridge.lib.aws;
+package ch.keybridge.aws;
 
+import ch.keybridge.aws.AwsS3;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Regions;
