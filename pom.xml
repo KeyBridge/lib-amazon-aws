@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>keybridge.lib</groupId>
   <artifactId>amazon-aws</artifactId>
-  <version>1.5.0</version>
+  <version>1.6.0</version>
   <packaging>jar</packaging>
 
   <name>lib-amazon-aws</name>
@@ -23,10 +23,15 @@
     v1.3.0 - expose ability to get 3S object URL
     v1.4.0 - add SES client. Amazon SES module communicates with Amazon Simple Email Service
     v1.5.0 - refactor all to 'ch.keybridge.aws' base package
+    v1.6.0 - add S3FileManager for more complex transactions
 
 
     Branch 1.2.0 - OSGI support
     v1.2.0 - convert artifact to OSGI bundle
+
+    Roadmap
+    v2.x - upgrade AWS SDK version. Requires refactor and minor rewrite
+
   </description>
 
   <organization>
@@ -40,6 +45,8 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
+    <!--version 2.17.9 release 30-Jul-2021-->
+    <amazon-sdk.version>2.17.9</amazon-sdk.version>
     <!--version 1.11.522 released	20-Mar-2019-->
     <amazon-s3.version>1.11.522</amazon-s3.version>
     <!--version 1.11.522 released	20-Mar-2019-->
@@ -57,6 +64,17 @@
       <artifactId>aws-java-sdk-ses</artifactId>
       <version>${amazon-ses.version}</version>
     </dependency>
+
+    <!--      <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>s3</artifactId>
+      <version>${amazon-sdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>ses</artifactId>
+      <version>${amazon-sdk.version}</version>
+    </dependency>-->
 
     <dependency>
       <groupId>junit</groupId>

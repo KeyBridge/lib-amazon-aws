@@ -27,6 +27,8 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion;
+import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.transfer.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;

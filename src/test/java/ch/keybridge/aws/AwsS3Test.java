@@ -23,6 +23,7 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.model.DeleteObjectsResult;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.transfer.*;
 import com.amazonaws.services.s3.transfer.model.UploadResult;
 import java.io.IOException;
 import java.nio.file.Path;

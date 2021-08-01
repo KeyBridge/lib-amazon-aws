@@ -4,6 +4,34 @@
 
 Provides a convenient wrapper for various AWS Java **Version 1.x** SDK resources.
 
+# S3 client use examples
+
+The easiest strategy is to create an S3 client then use it directly for simple file functions. YOu can also inject the S3 client into an S3 file manager for more complex transactions.
+
+```java
+/**
+ * Declare configuration and credentials. These may also be declared in a
+ * config file or as environment variables.
+ */
+String AWS_ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID";
+String AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY";
+String BUCKET_DEFAULT = "BUCKET_DEFAULT";
+com.amazonaws.regions.Regions REGION_DEFAULT = Regions.US_EAST_1;
+/**
+ * Instantiate a bucket config and S3 client.
+ */
+S3BucketConfig bucket = new S3BucketConfig(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, REGION_DEFAULT, BUCKET_DEFAULT);
+AwsS3 s3Client = new AwsS3(bucket);
+/**
+ * You may use the S3 client directly for simple list, upload and download.
+ * Use the file manager for more complicated functions.
+ */
+S3FileManager s3FileManager = new S3FileManager(s3Client);
+/**
+ * Execute file functions 
+ */
+```
+
 
 
 ## Authentication
