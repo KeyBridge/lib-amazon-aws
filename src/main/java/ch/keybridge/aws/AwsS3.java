@@ -27,8 +27,6 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion;
-import com.amazonaws.services.s3.model.*;
-import com.amazonaws.services.s3.transfer.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -91,8 +89,13 @@ public class AwsS3 {
   private String awsSecretAccessKey;
 
   /**
-   * Get an S3 client reading the AWS credentials from the default location;
-   * either .aws/credential or from environment variables.
+   * Default no-arg constructor. Provides an S3 client with AWS credentials read
+   * from the default location; either `.aws/credential` or from environment
+   * variables.
+   *
+   * @see
+   * <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/AuthUsingAcctOrUserCredentials.html">Using
+   * AWS credentials</a>
    */
   public AwsS3() {
   }
