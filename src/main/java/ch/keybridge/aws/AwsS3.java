@@ -17,6 +17,7 @@
  */
 package ch.keybridge.aws;
 
+import ch.keybridge.aws.s3.S3BucketConfig;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;

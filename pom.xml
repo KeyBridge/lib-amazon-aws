@@ -23,7 +23,7 @@
     v1.3.0 - expose ability to get 3S object URL
     v1.4.0 - add SES client. Amazon SES module communicates with Amazon Simple Email Service
     v1.5.0 - refactor all to 'ch.keybridge.aws' base package
-    v1.6.0 - add S3FileManager for more complex transactions
+    v1.6.0 - add S3FileManager for more complex transactions; move S3 classes to 's3' package
 
 
     Branch 1.2.0 - OSGI support

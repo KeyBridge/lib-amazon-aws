@@ -74,7 +74,7 @@ public class S3FileManager {
    *
    * @return a file hierarchy containing all available files.
    */
-  public FileNode getFileTree() {
+  public S3FileNode getFileTree() {
     return parseS3FilesAsHierarchy(s3Client.list(""));
   }
 
@@ -85,7 +85,7 @@ public class S3FileManager {
    * @param path the sub-directory path
    * @return a file hierarchy containing files under the path.
    */
-  public FileNode getUserFiles(String path) {
+  public S3FileNode getUserFiles(String path) {
     final String prefix = path + '/';
     return parseS3FilesAsHierarchy(s3Client.list(prefix));
   }
@@ -112,15 +112,15 @@ public class S3FileManager {
    * @param files
    * @return
    */
-  private static FileNode parseS3FilesAsHierarchy(List<S3ObjectSummary> files) {
-    final FileNode root = new FileNode("root");
+  private static S3FileNode parseS3FilesAsHierarchy(List<S3ObjectSummary> files) {
+    final S3FileNode root = new S3FileNode("root");
     for (S3ObjectSummary s3ObjectSummary : files) {
       S3Key parsedKey = new S3Key(s3ObjectSummary.getKey());
-      FileNode parentDir = root.getOrCreate(s3ObjectSummary.getBucketName());
+      S3FileNode parentDir = root.getOrCreate(s3ObjectSummary.getBucketName());
       for (String intermediateDirectory : parsedKey.getIntermediatePath()) {
         parentDir = parentDir.getOrCreate(intermediateDirectory);
       }
-      FileNode file = parentDir.getOrCreate(parsedKey.getFileName());
+      S3FileNode file = parentDir.getOrCreate(parsedKey.getFileName());
       file.setS3ObjectSummary(s3ObjectSummary);
     }
     return root;

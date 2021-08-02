@@ -16,7 +16,7 @@
  * suppliers, if any. The intellectual and technical concepts contained herein
  * are proprietary.
  */
-package ch.keybridge.aws;
+package ch.keybridge.aws.s3;
 
 import com.amazonaws.regions.Regions;
 

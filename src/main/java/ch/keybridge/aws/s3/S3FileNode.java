@@ -48,7 +48,7 @@ import java.util.*;
  * @author Andrius Druzinis-Vitkus
  * @since 0.0.1 created 2019-02-27
  */
-public class FileNode {
+public class S3FileNode {
 
   /**
    * The file metadata. This field must be null for intermediate directories and
@@ -68,14 +68,14 @@ public class FileNode {
   /**
    * Child nodes of a directory. Empty for file nodes.
    */
-  private final Map<String, FileNode> nodes = new LinkedHashMap<>();
+  private final Map<String, S3FileNode> nodes = new LinkedHashMap<>();
 
   /**
    * Construct a new FileNode instance.
    *
    * @param text the node text (label).
    */
-  public FileNode(String text) {
+  public S3FileNode(String text) {
     this.text = text;
   }
 
@@ -120,7 +120,7 @@ public class FileNode {
    *
    * @return child nodes.
    */
-  public List<FileNode> getNodes() {
+  public List<S3FileNode> getNodes() {
     return new ArrayList<>(nodes.values());
   }
 
@@ -133,8 +133,8 @@ public class FileNode {
    * @param name name of a child node
    * @return the child node
    */
-  public FileNode getOrCreate(String name) {
-    return nodes.computeIfAbsent(Objects.requireNonNull(name), FileNode::new);
+  public S3FileNode getOrCreate(String name) {
+    return nodes.computeIfAbsent(Objects.requireNonNull(name), S3FileNode::new);
   }
 
   /**
@@ -143,7 +143,7 @@ public class FileNode {
    * @param name name of a child node
    * @return the child node
    */
-  public FileNode get(String name) {
+  public S3FileNode get(String name) {
     return nodes.get(Objects.requireNonNull(name));
   }
 
@@ -154,7 +154,7 @@ public class FileNode {
    * @param text the text identifier
    * @return the node; null if not found.
    */
-  public FileNode findNode(String text) {
+  public S3FileNode findNode(String text) {
     return findNode(this, text);
   }
 
@@ -165,11 +165,11 @@ public class FileNode {
    * @param text the node identifier
    * @return the matching node
    */
-  private FileNode findNode(FileNode node, String text) {
-    FileNode found = null;
+  private S3FileNode findNode(S3FileNode node, String text) {
+    S3FileNode found = null;
 
     if (found == null) {
-      for (FileNode fileNode : node.getNodes()) {
+      for (S3FileNode fileNode : node.getNodes()) {
         if (found != null) {
           break;
         }
